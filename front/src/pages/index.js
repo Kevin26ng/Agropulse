@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { 
   Sprout, 
   FlaskConical, 
@@ -44,6 +45,7 @@ export default function Home() {
     { icon: Droplets, label: 'Humidity', value: '65%' }
   ];
 
+
   return (
     <div>
       {/* Hero Section */}
@@ -51,13 +53,21 @@ export default function Home() {
         <div className="icon-wrapper" style={{ margin: '0 auto 1rem' }}>
           <Leaf size={32} />
         </div>
-        <h1 style={{ fontSize: '2.5rem', marginBottom: '1rem', color: 'var(--primary-color)' }}>
-          Welcome to AgroPulse
-        </h1>
-        <p style={{ fontSize: '1.2rem', color: 'var(--text-secondary)', maxWidth: '600px', margin: '0 auto' }}>
-          Intelligent farming solutions powered by AI. Get personalized recommendations for crops, 
-          fertilizers, and pest management.
-        </p>
+
+
+
+
+         {/*Image */}
+        <div style={{ margin: '1rem 0' }}>
+          <Image 
+            src="/img/agropulse.png"   //
+            alt="Agropulse"
+             width={1200}
+             height={100}
+/>
+</div>
+
+
       </div>
 
       {/* Weather Stats */}
