@@ -283,8 +283,9 @@ export default function Dashboard() {
         <div className="card" style={{ textAlign: 'center' }}>
           <h3 style={{ marginBottom: '1rem' }}>Export Farm Report</h3>
           <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
-            Download a comprehensive report of your farm's performance and recommendations
-          </p>
+  Download a comprehensive report of your farm&apos;s performance and recommendations
+</p>
+
           <button 
             className="btn btn-primary" 
             onClick={handleExport}
