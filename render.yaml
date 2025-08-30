@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: agrismart-backend
+    runtime: docker
+    plan: free
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: PYTHON_VERSION
+        value: 3.7.0
+      - key: PYTHONPATH
+        value: /app
+    docker:
+      dockerfilePath: Dockerfile
+    ports:
+      - port: 5000
+        protocol: HTTP

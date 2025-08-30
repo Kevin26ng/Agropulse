@@ -1,3 +1,6 @@
+
+from dotenv import load_dotenv
+load_dotenv() 
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS 
 import pandas as pd
@@ -9,10 +12,13 @@ from keras.models import load_model
 import pickle
 from datetime import datetime 
 
-# Initialize Flask app
 app = Flask(__name__)
 
-CORS(app, origins="*", supports_credentials=True)
+# Initialize Flask app
+if os.environ.get('FLASK_ENV') == 'production':
+    CORS(app, origins=[os.environ.get('FRONTEND_URL', 'https://your-frontend.onrender.com')])
+else:
+    CORS(app)
 
 # Load ML models
 classifier = load_model('Trained_model.h5')
@@ -28,7 +34,7 @@ def pred_pest(pest):
         test_image = image.img_to_array(test_image)
         test_image = np.expand_dims(test_image, axis=0)
         result = classifier.predict_classes(test_image)
-        return result
+        return np.argmax(result, axis=1)
     except Exception as e:
         print(f"Error in pest prediction: {str(e)}")
         return None
@@ -156,6 +162,5 @@ def health_check():
     return jsonify({'status': 'healthy'})
 
 if __name__ == '__main__':
-    # Create upload directory if it doesn't exist
-    os.makedirs('static/user_uploaded', exist_ok=True)
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=os.environ.get('FLASK_ENV') != 'production')
