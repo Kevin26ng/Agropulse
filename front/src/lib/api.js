@@ -1,8 +1,9 @@
 // For production - Render backend
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 
                      (process.env.NODE_ENV === 'production' 
-                      ? 'https://your-render-backend-url.onrender.com/api' 
-                      : 'http://localhost:5000/api');
+                      ? 'https://your-render-backend-url.onrender.com/api'  
+                      : 'http://localhost:5000/api'                        
+                      );
 
 // Helper function to handle responses
 async function handleResponse(response) {

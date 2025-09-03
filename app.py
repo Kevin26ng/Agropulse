@@ -15,12 +15,20 @@ from datetime import datetime
 app = Flask(__name__)
 
 # Initialize Flask app
-if os.environ.get('FLASK_ENV') == 'production':
-    CORS(app, origins=[os.environ.get('FRONTEND_URL', 'https://your-frontend.onrender.com')])
-else:
-    CORS(app)
+allowed_origins = [
+    os.environ.get('FRONTEND_URL', 'https://agropulsee.netlify.app'),
+    'http://localhost:3000',  
+    'http://127.0.0.1:3000'   
+]
 
-# Load ML models
+CORS(app, 
+     origins=allowed_origins,
+     supports_credentials=True,  
+     allow_headers=['Content-Type', 'Authorization'], 
+     methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']  
+)
+
+
 classifier = load_model('Trained_model.h5')
 classifier._make_predict_function()
 
@@ -30,14 +38,29 @@ crop_recommendation_model = pickle.load(open(crop_recommendation_model_path, 'rb
 # Helper function for pest prediction
 def pred_pest(pest):
     try:
+        print(f"Processing image: {pest}")
+        print(f"File exists: {os.path.exists(pest)}")
         test_image = image.load_img(pest, target_size=(64, 64))
+        print("Image loaded successfully")
         test_image = image.img_to_array(test_image)
         test_image = np.expand_dims(test_image, axis=0)
-        result = classifier.predict_classes(test_image)
-        return np.argmax(result, axis=1)
+        print(f"Image shape: {test_image.shape}")
+        predictions = classifier.predict(test_image)
+        print(f"Raw predictions: {predictions}")
+        result = np.argmax(predictions, axis=1)
+        print(f"Argmax result: {result}")
+        return result
     except Exception as e:
         print(f"Error in pest prediction: {str(e)}")
         return None
+    
+    
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+    response.headers.add('Access-Control-Allow-Credentials', 'true')
+    return response
 
 # API Routes
 @app.route('/api/fertilizer-predict', methods=['POST'])
